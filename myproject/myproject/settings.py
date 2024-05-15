@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'myapp',
     'myproject',
     'rest_framework',
+
     # Add your app name here
 ]
 REST_FRAMEWORK = {
