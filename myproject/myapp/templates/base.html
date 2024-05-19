@@ -1,0 +1,32 @@
+<!-- base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Movie Booking System{% endblock %}</title>
+    <!-- Add any common CSS or meta tags here -->
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <h1>My Movie Booking System</h1>
+        <!-- Add navigation menu, logo, etc. -->
+    </header>
+
+    <!-- Main content -->
+    <main>
+        {% block content %}
+        <!-- Default content if not overridden by child templates -->
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <!-- Add footer content -->
+        <p>&copy; 2024 My Movie Booking System</p>
+    </footer>
+
+    <!-- Add any common JavaScript here -->
+</body>
+</html>
