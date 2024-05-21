@@ -21,6 +21,6 @@ class CouponAdmin(admin.ModelAdmin):
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
-    list_display = ('user', 'category', 'product', 'price', 'battery_health_condition', 'coupon_code')
-    list_filter = ('category', 'coupon_code')
-    search_fields = ('user__username', 'product__name', 'coupon_code__code')
+    list_display = ('user', 'product', 'quantity')
+    list_filter = ('user', 'product')
+    search_fields = ('user__username', 'product__name')

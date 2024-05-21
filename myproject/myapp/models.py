@@ -9,6 +9,19 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+class Coupon(models.Model):
+    code = models.CharField(max_length=20, unique=True)
+    discount_percent = models.DecimalField(max_digits=5, decimal_places=2)
+    valid_from = models.DateField()
+    valid_to = models.DateField()
+
+    def is_valid(self):
+        now = timezone.now().date()
+        return self.valid_from <= now <= self.valid_to
+
+    def __str__(self):
+        return self.code
+
 class Product(models.Model):
     photo = models.ImageField(upload_to='product_photos/', null=True, blank=True)
     name = models.CharField(max_length=200)
@@ -20,6 +33,8 @@ class Product(models.Model):
     offer_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     available_offer_start_date = models.DateField(null=True, blank=True)
     available_offer_end_date = models.DateField(null=True, blank=True)
+    coupon_code = models.ForeignKey(Coupon, null=True, blank=True, on_delete=models.SET_NULL)
+    battery_health_condition = models.CharField(max_length=100, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.pk:  # If it's a new product being added
@@ -37,41 +52,23 @@ class Product(models.Model):
             return self.available_offer_start_date <= now <= self.available_offer_end_date
         return False
 
+    def apply_discount(self):
+        if self.coupon_code and self.coupon_code.is_valid():
+            discount_amount = (self.price_in_npr * self.coupon_code.discount_percent) / 100
+            discounted_price = self.price_in_npr - discount_amount
+            return discounted_price
+        return self.price_in_npr
+
     def __str__(self):
         return self.name
 
-class Coupon(models.Model):
-    code = models.CharField(max_length=20, unique=True)
-    discount_percent = models.DecimalField(max_digits=5, decimal_places=2)
-    valid_from = models.DateField()
-    valid_to = models.DateField()
-
-    def is_valid(self):
-        now = timezone.now().date()
-        return self.valid_from <= now <= self.valid_to
-
-    def __str__(self):
-        return self.code
-
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    battery_health_condition = models.CharField(max_length=100)
-    coupon_code = models.ForeignKey(Coupon, null=True, blank=True, on_delete=models.SET_NULL)
+    quantity = models.PositiveIntegerField(default=1)
 
-    def apply_discount(self):
-        if self.coupon_code and self.coupon_code.is_valid():
-            discount_amount = (self.price * self.coupon_code.discount_percent) / 100
-            discounted_price = self.price - discount_amount
-            return discounted_price
-        return self.price
-
-    def save(self, *args, **kwargs):
-        if self.coupon_code and self.coupon_code.is_valid():
-            self.price = self.apply_discount()
-        super().save(*args, **kwargs)
+    def total_price(self):
+        return self.product.apply_discount() * self.quantity
 
     def __str__(self):
-        return f"{self.product.name} in {self.category.name}"
+        return f"{self.product.name} x {self.quantity} for {self.user.username}"
