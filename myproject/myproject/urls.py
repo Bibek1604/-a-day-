@@ -7,6 +7,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', ProductListCreateAPIView.as_view(), name='product-list-create'),
     path('products/<int:pk>/', ProductRetrieveUpdateDestroyAPIView.as_view(), name='product-detail'),
+        path('coupen/', include('coupon.urls')),
+
 ]
 
     # path('myapp/', include('myapp.urls')),  # Include URLs for your app

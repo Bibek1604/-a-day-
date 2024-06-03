@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
@@ -8,6 +9,7 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Coupon(models.Model):
     code = models.CharField(max_length=20, unique=True)
@@ -21,6 +23,7 @@ class Coupon(models.Model):
 
     def __str__(self):
         return self.code
+
 
 class Product(models.Model):
     photo = models.ImageField(upload_to='product_photos/', null=True, blank=True)
@@ -62,10 +65,15 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+    def clean(self):
+        if self.offer_price and self.offer_price >= self.price_in_npr:
+            raise ValidationError('Offer price must be less than the regular price.')
+
+
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
+    quantity = models.PositiveIntegerField(default=1)  # Ensure 'quantity' is defined
 
     def total_price(self):
         return self.product.apply_discount() * self.quantity

@@ -34,5 +34,4 @@ class CartSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation['total_price'] = instance.total_price()
-        return representation
+        representation['total_price'] = instance.total_pri

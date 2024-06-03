@@ -21,6 +21,6 @@ class CouponAdmin(admin.ModelAdmin):
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
-    list_display = ('user', 'product', 'quantity')
+    list_display = ('user', 'product', 'quantity')  # Ensure 'quantity' is correctly referenced
     list_filter = ('user', 'product')
     search_fields = ('user__username', 'product__name')
