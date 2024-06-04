@@ -5,9 +5,9 @@ from myapp.views import (ProductListCreateAPIView,
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', ProductListCreateAPIView.as_view(), name='product-list-create'),
+    path('productapi/', ProductListCreateAPIView.as_view(), name='product-list-create'),
     path('products/<int:pk>/', ProductRetrieveUpdateDestroyAPIView.as_view(), name='product-detail'),
-        path('coupen/', include('coupon.urls')),
+
 
 ]
 
