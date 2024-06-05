@@ -8,7 +8,10 @@ from rest_framework import generics
 from .models import FeatureProduct
 from .serializers import FeatureProductSerializer
 from django.utils import timezone
-from .models import BestSellingProduct
+from .models import BestSellingProduct  
+from .models import FeatureProduct
+from .models import FlashSale
+
 
 from .serializers import ProductSerializer
 
@@ -68,3 +71,10 @@ def best_selling_products(request):
 def best_selling_product_detail(request, pk):
     product = get_object_or_404(BestSellingProduct, pk=pk)
     return render(request, 'best_selling_product_detail.html', {'product': product})
+def flash_sales_list(request):
+    flash_sales = FlashSale.objects.all()
+    return render(request, 'flash_sales_list.html', {'flash_sales': flash_sales})
+
+def flash_sale_detail(request, pk):
+    flash_sale = get_object_or_404(FlashSale, pk=pk)
+    return render(request, 'flash_sale_detail.html', {'flash_sale': flash_sale})

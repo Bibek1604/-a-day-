@@ -56,3 +56,22 @@ class BestSellingProduct(models.Model):
 
     def __str__(self):
         return self.title
+    
+
+class FlashSale(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    initial_price = models.DecimalField(max_digits=10, decimal_places=2)
+    final_price = models.DecimalField(max_digits=10, decimal_places=2)
+    photo = models.ImageField(upload_to='flash_sale_photos/', default='flash_sale_photos/default_photo.jpg')
+    remaining_time = models.DateTimeField()
+    discount_percentage = models.DecimalField(max_digits=5, decimal_places=2)
+    product_id = models.CharField(max_length=50)
+
+    def time_remaining(self):
+        now = timezone.now()
+        remaining_time = self.remaining_time - now
+        return remaining_time.total_seconds() // 3600, (remaining_time.total_seconds() // 60) % 60
+
+    def __str__(self):
+        return self.title

@@ -1,8 +1,13 @@
 # myapp/urls.py
 from django.urls import path
-from .views import ProductListCreateView, ProductDetailView, ProductPurchaseView
-from .views import FeatureProductListView, feature_product_detail_view
-from . import views 
+from .views import (
+    ProductListCreateView, ProductDetailView, ProductPurchaseView,
+    FeatureProductListView, feature_product_detail_view, 
+    flash_sale_detail, best_selling_products, 
+    best_selling_product_detail, flash_sales_list, flash_sale_detail
+)
+
+from myapp import   views
 
 
 urlpatterns = [
@@ -13,5 +18,7 @@ urlpatterns = [
     path('feature-products/<int:pk>/', feature_product_detail_view, name='feature-product-detail'),
     path('best-selling-products/', views.best_selling_products, name='best_selling_products'),
     path('best-selling-products/<int:pk>/', views.best_selling_product_detail, name='best_selling_product_detail'),
+    path('flash-sales/', flash_sales_list, name='flash_sales'),
+    path('flash-sales/<int:pk>/', flash_sale_detail, name='flash_sale_detail'),
 ]
 

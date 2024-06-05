@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import Product
 from .models import FeatureProduct
 from .models import BestSellingProduct
+from .models import FlashSale
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
@@ -28,3 +29,7 @@ class BestSellingProductSerializer(serializers.ModelSerializer):
         model = BestSellingProduct
         fields = '__all__'
 
+class FlashSaleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FlashSale
+        fields = '__all__'
