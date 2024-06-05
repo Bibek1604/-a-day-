@@ -7,7 +7,7 @@ class Product(models.Model):
     initial_rate = models.DecimalField(max_digits=10, decimal_places=2)
     final_rate = models.DecimalField(max_digits=10, decimal_places=2)
     discount_percent = models.DecimalField(max_digits=5, decimal_places=2)
-    photos = models.JSONField()
+    photo = models.ImageField(upload_to='productsImage only')
     color = models.CharField(max_length=50)
     available = models.BooleanField(default=True)
     stock = models.IntegerField()
