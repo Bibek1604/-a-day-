@@ -8,7 +8,6 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ('title', 'initial_rate', 'final_rate', 'color', 'available', 'stock')
 
 class FeatureProductAdmin(admin.ModelAdmin):
-    list_display = ('title', 'initial_price', 'final_price', 'sale_end_time', 'Category')
+    list_display = ('title', 'initial_price', 'final_price', 'discount_percent', 'category')  # Assuming 'category' is a valid attribute of FeatureProduct
 
-admin.site.register(Product, ProductAdmin)
 admin.site.register(FeatureProduct, FeatureProductAdmin)
