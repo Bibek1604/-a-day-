@@ -41,3 +41,18 @@ class FeatureProduct(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class BestSellingProduct(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    initial_rate = models.DecimalField(max_digits=10, decimal_places=2)
+    final_rate = models.DecimalField(max_digits=10, decimal_places=2)
+    image = models.ImageField(upload_to='best_selling_product_images/', default='best_selling_product_images/default_image.jpg')
+    color = models.CharField(max_length=50, default='default_color')
+    available = models.BooleanField(default=True)
+    stock = models.IntegerField(null=True)
+    Category = models.CharField(max_length=500, null=True, blank=True)
+
+    def __str__(self):
+        return self.title

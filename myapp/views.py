@@ -8,6 +8,7 @@ from rest_framework import generics
 from .models import FeatureProduct
 from .serializers import FeatureProductSerializer
 from django.utils import timezone
+from .models import BestSellingProduct
 
 from .serializers import ProductSerializer
 
@@ -59,3 +60,11 @@ def feature_product_detail_view(request, pk):
 
     return render(request, 'feature_product_detail.html', context)
 
+
+def best_selling_products(request):
+    products = BestSellingProduct.objects.filter(available=True)
+    return render(request, 'best_selling_products.html', {'products': products})
+
+def best_selling_product_detail(request, pk):
+    product = get_object_or_404(BestSellingProduct, pk=pk)
+    return render(request, 'best_selling_product_detail.html', {'product': product})

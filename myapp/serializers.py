@@ -2,6 +2,7 @@
 from rest_framework import serializers
 from .models import Product
 from .models import FeatureProduct
+from .models import BestSellingProduct
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
@@ -21,4 +22,9 @@ class FeatureProductSerializer(serializers.ModelSerializer):
         model = FeatureProduct
         fields = '__all__'
 
+
+class BestSellingProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BestSellingProduct
+        fields = '__all__'
 
