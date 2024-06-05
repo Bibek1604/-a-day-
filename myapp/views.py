@@ -71,6 +71,7 @@ def best_selling_products(request):
 def best_selling_product_detail(request, pk):
     product = get_object_or_404(BestSellingProduct, pk=pk)
     return render(request, 'best_selling_product_detail.html', {'product': product})
+
 def flash_sales_list(request):
     flash_sales = FlashSale.objects.all()
     return render(request, 'flash_sales_list.html', {'flash_sales': flash_sales})
