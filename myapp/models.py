@@ -9,7 +9,7 @@ class Product(models.Model):
     initial_rate = models.DecimalField(max_digits=10, decimal_places=2)
     final_rate = models.DecimalField(max_digits=10, decimal_places=2)
     discount_percent = models.DecimalField(max_digits=5, decimal_places=2)
-    feature_image = models.ImageField(upload_to='feature_product_images/', default='path/to/default/image.jpg')
+    image = models.ImageField(upload_to='product_images/', default='path/to/default/image.jpg')
     color = models.CharField(max_length=50)
     available = models.BooleanField(default=True)
     stock = models.IntegerField()
@@ -28,6 +28,10 @@ class FeatureProduct(models.Model):
     feature_image = models.ImageField(upload_to='feature_product_images/', default='feature_product_images/default_image.jpg')
     sale_end_time = models.DateTimeField()
     Category = models.CharField(max_length=500, null=True, blank=True)
+    available = models.BooleanField(default=True)
+    stock = models.IntegerField()
+    color = models.CharField(max_length=50)
+
 
 
     def save(self, *args, **kwargs):
