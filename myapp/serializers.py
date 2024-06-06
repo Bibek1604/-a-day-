@@ -4,6 +4,11 @@ from .models import Product
 from .models import FeatureProduct
 from .models import BestSellingProduct
 from .models import FlashSale
+from .models import Coupon
+
+
+
+
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
@@ -35,4 +40,8 @@ class FlashSaleSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class CouponSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Coupon
+        fields = ['code', 'discount_amount', 'start_date', 'end_date', 'is_active']
 

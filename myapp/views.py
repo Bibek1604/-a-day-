@@ -11,6 +11,12 @@ from django.utils import timezone
 from .models import BestSellingProduct  
 from .models import FeatureProduct
 from .models import FlashSale
+from .models import Coupon
+from .serializers import CouponSerializer
+from django.utils import timezone
+
+
+
 
 
 from .serializers import ProductSerializer
@@ -82,3 +88,23 @@ def flash_sale_detail(request, pk):
 
 
 # views.py
+
+(['POST'])
+def apply_coupon(request):
+    code = request.data.get('code')
+    product_cost = request.data.get('product_cost')
+    
+    if not code or not product_cost:
+        return Response({'error': 'Coupon code and product cost are required'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        coupon = Coupon.objects.get(code=code)
+        if coupon.is_valid():
+            if product_cost < coupon.discount_amount:
+                return Response({'error': 'Product cost is smaller than the discount amount'}, status=status.HTTP_400_BAD_REQUEST)
+            discounted_price = product_cost - coupon.discount_amount
+            return Response({'message': 'Coupon applied!', 'discounted_price': discounted_price}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'This coupon is not valid at this time'}, status=status.HTTP_400_BAD_REQUEST)
+    except Coupon.DoesNotExist:
+        return Response({'error': 'Invalid coupon code'}, status=status.HTTP_400_BAD_REQUEST)

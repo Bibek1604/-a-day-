@@ -5,7 +5,9 @@ from .views import (
     FeatureProductListView, feature_product_detail_view, 
     flash_sale_detail, best_selling_products, 
     best_selling_product_detail, flash_sales_list, flash_sale_detail
+    
 )
+from .views import apply_coupon
 
 from myapp import   views
 
@@ -20,5 +22,7 @@ urlpatterns = [
     path('best-selling-products/<int:pk>/', views.best_selling_product_detail, name='best_selling_product_detail'),
     path('flash-sales/', flash_sales_list, name='flash_sales'),
     path('flash-sales/<int:pk>/', flash_sale_detail, name='flash_sale_detail'),
+    path('api/apply-coupon/', apply_coupon, name='apply_coupon'),
+
 ]
 
