@@ -1,25 +1,11 @@
-# myapp/views.py
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Product
+from rest_framework.decorators import api_view
+from .models import Product, FeatureProduct, BestSellingProduct, FlashSale, Coupon, Order
+from .serializers import ProductSerializer, FeatureProductSerializer, CouponSerializer, OrderSerializer
 from django.shortcuts import render, get_object_or_404
-from rest_framework import generics
-from .models import FeatureProduct
-from .serializers import FeatureProductSerializer
 from django.utils import timezone
-from .models import BestSellingProduct  
-from .models import FeatureProduct
-from .models import FlashSale
-from .models import Coupon
-from .serializers import CouponSerializer
-from django.utils import timezone
-
-
-
-
-
-from .serializers import ProductSerializer
 
 class ProductListCreateView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
@@ -43,19 +29,11 @@ class ProductPurchaseView(APIView):
         else:
             return Response({'message': 'Out of stock'}, status=status.HTTP_400_BAD_REQUEST)
 
-# myapp/views.py
-
-# myapp/views.py
-from django.shortcuts import render, get_object_or_404
-from rest_framework import generics
-from .models import FeatureProduct
-from .serializers import FeatureProductSerializer
-from django.utils import timezone
-
 class FeatureProductListView(generics.ListCreateAPIView):
     queryset = FeatureProduct.objects.all()
     serializer_class = FeatureProductSerializer
 
+@api_view(['GET'])
 def feature_product_detail_view(request, pk):
     feature_product = get_object_or_404(FeatureProduct, pk=pk)
     sale_end_time = feature_product.sale_end_time
@@ -68,7 +46,6 @@ def feature_product_detail_view(request, pk):
     }
 
     return render(request, 'feature_product_detail.html', context)
-
 
 def best_selling_products(request):
     products = BestSellingProduct.objects.filter(available=True)
@@ -86,10 +63,7 @@ def flash_sale_detail(request, pk):
     flash_sale = get_object_or_404(FlashSale, pk=pk)
     return render(request, 'flash_sale_detail.html', {'flash_sale': flash_sale})
 
-
-# views.py
-
-(['POST'])
+@api_view(['POST'])
 def apply_coupon(request):
     code = request.data.get('code')
     product_cost = request.data.get('product_cost')
@@ -108,3 +82,11 @@ def apply_coupon(request):
             return Response({'error': 'This coupon is not valid at this time'}, status=status.HTTP_400_BAD_REQUEST)
     except Coupon.DoesNotExist:
         return Response({'error': 'Invalid coupon code'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def create_order(request):
+    serializer = OrderSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

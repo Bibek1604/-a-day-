@@ -1,7 +1,4 @@
-# myapp/models.py
 from django.db import models
-from django.utils import timezone
-from django.core.validators import FileExtensionValidator
 from django.utils import timezone
 
 
@@ -19,7 +16,7 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
-# myapp/models.py
+
 
 class FeatureProduct(models.Model):
     title = models.CharField(max_length=255)
@@ -27,10 +24,10 @@ class FeatureProduct(models.Model):
     initial_price = models.DecimalField(max_digits=10, decimal_places=2)
     final_price = models.DecimalField(max_digits=10, decimal_places=2)
     discount_percent = models.DecimalField(max_digits=5, decimal_places=2, editable=False, default=0)
-    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, editable=False, default=0)  # New field for discount amount
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, editable=False, default=0)  
     feature_image = models.ImageField(upload_to='feature_product_images/', default='feature_product_images/default_image.jpg')
     sale_end_time = models.DateTimeField()
-    category = models.CharField(max_length=500, null=True, blank=True)  # Changed to lowercase "category"
+    category = models.CharField(max_length=500, null=True, blank=True)
     available = models.BooleanField(default=True)
     stock = models.IntegerField(null=True)
     color = models.CharField(max_length=50, default='default_color')
@@ -38,7 +35,7 @@ class FeatureProduct(models.Model):
     def save(self, *args, **kwargs):
         if self.initial_price > 0:
             self.discount_percent = ((self.initial_price - self.final_price) / self.initial_price) * 100
-            self.discount_amount = self.initial_price - self.final_price  # Calculate discount amount
+            self.discount_amount = self.initial_price - self.final_price
         super(FeatureProduct, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -93,3 +90,28 @@ class Coupon(models.Model):
         return self.is_active and self.start_date <= now <= self.end_date
 
 
+class Customer(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    address = models.TextField()
+    phone_number = models.CharField(max_length=15)
+
+    def __str__(self):
+        return self.name
+
+class Order(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f'Order {self.id} by {self.customer.name}'
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f'{self.quantity} x {self.product.title}'

@@ -10,6 +10,8 @@ from .views import (
 from .views import apply_coupon
 
 from myapp import   views
+from .views import create_order
+
 
 
 urlpatterns = [
@@ -23,6 +25,8 @@ urlpatterns = [
     path('flash-sales/', flash_sales_list, name='flash_sales'),
     path('flash-sales/<int:pk>/', flash_sale_detail, name='flash_sale_detail'),
     path('api/apply-coupon/', apply_coupon, name='apply_coupon'),
+    path('api/create-order/', create_order, name='create_order'),
+
 
 ]
 
