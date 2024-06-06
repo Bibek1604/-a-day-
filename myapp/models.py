@@ -12,7 +12,7 @@ class Product(models.Model):
     color = models.CharField(max_length=50, default='default_color')
     available = models.BooleanField(default=True)
     stock = models.IntegerField(null=True)
-    Category = models.CharField(max_length=500, null=True, blank=True)
+    category = models.CharField(max_length=500, null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -51,7 +51,7 @@ class BestSellingProduct(models.Model):
     color = models.CharField(max_length=50, default='default_color')
     available = models.BooleanField(default=True)
     stock = models.IntegerField(null=True)
-    Category = models.CharField(max_length=500, null=True, blank=True)
+    category = models.CharField(max_length=500, null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -74,6 +74,7 @@ class FlashSale(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class Coupon(models.Model):
     code = models.CharField(max_length=20, unique=True)
