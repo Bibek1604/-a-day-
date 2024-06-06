@@ -5,7 +5,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from myapp.views import FeatureProductListView, feature_product_detail_view
 from myapp.views import create_order
-from myapp.views import ProductSearchView
+from myapp.views import search_products
+
 
 
 
@@ -16,7 +17,8 @@ urlpatterns = [
     path('BestSellingProducts/', include('myapp.urls')),
     path('coupencode/', include('myapp.urls')), 
     path('create-order/', create_order, name='create_order'),  # Named URL pattern
-    path('search/', ProductSearchView.as_view(), name='product-search'),
+    path('search/', search_products, name='search_products'),
+
 
 
     
