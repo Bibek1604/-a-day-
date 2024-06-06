@@ -14,19 +14,28 @@ CATEGORY_CHOICES = [
     ('Android', 'Android'),
 ]
 
+# Define color choices
+COLOR_CHOICES = [
+    ('Red', 'Red'),
+    ('Black', 'Black'),
+    ('White', 'White'),
+    ('Purple', 'Purple'),
+]
+
 class Product(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     initial_rate = models.DecimalField(max_digits=10, decimal_places=2)
     final_rate = models.DecimalField(max_digits=10, decimal_places=2)
-    discount_percent = models.DecimalField(max_digits=5, decimal_places=2)
+    discount_percent = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     image = models.ImageField(upload_to='product_images/', default='path/to/default/image.jpg')
-    color = models.CharField(max_length=50, default='default_color')
+    color = models.CharField(max_length=50, choices=COLOR_CHOICES, default='Red')
     available = models.BooleanField(default=True)
     stock = models.IntegerField(null=True)
     category = models.CharField(max_length=500, choices=CATEGORY_CHOICES, null=True, blank=True)
     warrenty = models.CharField(max_length=100, null=True, blank=True)
-    Storage = models.CharField(max_length=100, null=False, blank=True)
+    storage = models.CharField(max_length=100, null=False, blank=True)
+
     def __str__(self):
         return self.title
 
@@ -42,9 +51,9 @@ class FeatureProduct(models.Model):
     category = models.CharField(max_length=500, choices=CATEGORY_CHOICES, null=True, blank=True)
     available = models.BooleanField(default=True)
     stock = models.IntegerField(null=True)
-    color = models.CharField(max_length=50, default='default_color')
+    color = models.CharField(max_length=50, choices=COLOR_CHOICES, default='Red')
     warrenty = models.CharField(max_length=100, null=True, blank=True)
-    Storage = models.CharField(max_length=100, null=False, blank=True)
+    storage = models.CharField(max_length=100, null=False, blank=True)
 
     def save(self, *args, **kwargs):
         if self.initial_price > 0:
@@ -61,12 +70,12 @@ class BestSellingProduct(models.Model):
     initial_rate = models.DecimalField(max_digits=10, decimal_places=2)
     final_rate = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to='best_selling_product_images/', default='best_selling_product_images/default_image.jpg')
-    color = models.CharField(max_length=50, default='default_color')
+    color = models.CharField(max_length=50, choices=COLOR_CHOICES, default='Red')
     available = models.BooleanField(default=True)
     stock = models.IntegerField(null=True)
     category = models.CharField(max_length=500, choices=CATEGORY_CHOICES, null=True, blank=True)
     warrenty = models.CharField(max_length=100, null=True, blank=True)
-    Storage = models.CharField(max_length=100, null=False, blank=True)
+    storage = models.CharField(max_length=100, null=False, blank=True)
 
     def __str__(self):
         return self.title
@@ -81,7 +90,7 @@ class FlashSale(models.Model):
     discount_percentage = models.DecimalField(max_digits=5, decimal_places=2)
     product_id = models.CharField(max_length=50)
     warrenty = models.CharField(max_length=100, null=True, blank=True)
-    Storage = models.CharField(max_length=100, null=False, blank=True)
+    storage = models.CharField(max_length=100, null=False, blank=True)
 
     def time_remaining(self):
         now = timezone.now()
