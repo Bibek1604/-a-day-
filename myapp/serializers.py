@@ -33,3 +33,6 @@ class FlashSaleSerializer(serializers.ModelSerializer):
     class Meta:
         model = FlashSale
         fields = '__all__'
+
+
+

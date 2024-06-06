@@ -79,3 +79,6 @@ def flash_sales_list(request):
 def flash_sale_detail(request, pk):
     flash_sale = get_object_or_404(FlashSale, pk=pk)
     return render(request, 'flash_sale_detail.html', {'flash_sale': flash_sale})
+
+
+# views.py

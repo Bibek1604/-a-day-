@@ -75,3 +75,7 @@ class FlashSale(models.Model):
 
     def __str__(self):
         return self.title
+
+
+
+# models.py

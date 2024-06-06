@@ -21,3 +21,5 @@ admin.site.register(Product)
 admin.site.register(FeatureProduct)
 admin.site.register(BestSellingProduct)
 admin.site.register(FlashSale)
+
+
