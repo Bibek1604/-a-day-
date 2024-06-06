@@ -1,6 +1,18 @@
 from django.db import models
 from django.utils import timezone
 
+# Define category choices
+CATEGORY_CHOICES = [
+    ('Newiphone', 'New iPhone'),
+    ('OldIphone', 'Old iPhone'),
+    ('Cover', 'Cover'),
+    ('Electronics', 'Electronics'),
+    ('NewAndroid', 'New Android'),
+    ('UsedAndroid', 'Used Android'),
+    ('Laptop', 'Laptop'),
+    ('Earbuds', 'Earbuds'),
+    ('Android', 'Android'),
+]
 
 class Product(models.Model):
     title = models.CharField(max_length=255)
@@ -12,11 +24,11 @@ class Product(models.Model):
     color = models.CharField(max_length=50, default='default_color')
     available = models.BooleanField(default=True)
     stock = models.IntegerField(null=True)
-    category = models.CharField(max_length=500, null=True, blank=True)
-
+    category = models.CharField(max_length=500, choices=CATEGORY_CHOICES, null=True, blank=True)
+    warrenty = models.CharField(max_length=100, null=True, blank=True)
+    Storage = models.CharField(max_length=100, null=False, blank=True)
     def __str__(self):
         return self.title
-
 
 class FeatureProduct(models.Model):
     title = models.CharField(max_length=255)
@@ -24,13 +36,15 @@ class FeatureProduct(models.Model):
     initial_price = models.DecimalField(max_digits=10, decimal_places=2)
     final_price = models.DecimalField(max_digits=10, decimal_places=2)
     discount_percent = models.DecimalField(max_digits=5, decimal_places=2, editable=False, default=0)
-    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, editable=False, default=0)  
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, editable=False, default=0)
     feature_image = models.ImageField(upload_to='feature_product_images/', default='feature_product_images/default_image.jpg')
     sale_end_time = models.DateTimeField()
-    category = models.CharField(max_length=500, null=True, blank=True)
+    category = models.CharField(max_length=500, choices=CATEGORY_CHOICES, null=True, blank=True)
     available = models.BooleanField(default=True)
     stock = models.IntegerField(null=True)
     color = models.CharField(max_length=50, default='default_color')
+    warrenty = models.CharField(max_length=100, null=True, blank=True)
+    Storage = models.CharField(max_length=100, null=False, blank=True)
 
     def save(self, *args, **kwargs):
         if self.initial_price > 0:
@@ -41,7 +55,6 @@ class FeatureProduct(models.Model):
     def __str__(self):
         return self.title
 
-
 class BestSellingProduct(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
@@ -51,11 +64,12 @@ class BestSellingProduct(models.Model):
     color = models.CharField(max_length=50, default='default_color')
     available = models.BooleanField(default=True)
     stock = models.IntegerField(null=True)
-    category = models.CharField(max_length=500, null=True, blank=True)
+    category = models.CharField(max_length=500, choices=CATEGORY_CHOICES, null=True, blank=True)
+    warrenty = models.CharField(max_length=100, null=True, blank=True)
+    Storage = models.CharField(max_length=100, null=False, blank=True)
 
     def __str__(self):
         return self.title
-    
 
 class FlashSale(models.Model):
     title = models.CharField(max_length=255)
@@ -66,6 +80,8 @@ class FlashSale(models.Model):
     remaining_time = models.DateTimeField()
     discount_percentage = models.DecimalField(max_digits=5, decimal_places=2)
     product_id = models.CharField(max_length=50)
+    warrenty = models.CharField(max_length=100, null=True, blank=True)
+    Storage = models.CharField(max_length=100, null=False, blank=True)
 
     def time_remaining(self):
         now = timezone.now()
@@ -74,7 +90,6 @@ class FlashSale(models.Model):
 
     def __str__(self):
         return self.title
-
 
 class Coupon(models.Model):
     code = models.CharField(max_length=20, unique=True)
@@ -89,7 +104,6 @@ class Coupon(models.Model):
     def is_valid(self):
         now = timezone.now()
         return self.is_active and self.start_date <= now <= self.end_date
-
 
 class Customer(models.Model):
     name = models.CharField(max_length=100)
