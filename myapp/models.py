@@ -20,7 +20,28 @@ COLOR_CHOICES = [
     ('Black', 'Black'),
     ('White', 'White'),
     ('Purple', 'Purple'),
+    ('Blue', 'Blue'),
+    ('Green', 'Green'),
+    ('Yellow', 'Yellow'),
+    ('Pink', 'Pink'),
+    ('Coral', 'Coral'),
+    ('Space Gray', 'Space Gray'),
+    ('Silver', 'Silver'),
+    ('Gold', 'Gold'),
+    ('Rose Gold', 'Rose Gold'),
+    ('Midnight', 'Midnight'),
+    ('Starlight', 'Starlight'),
+    ('Jet Black', 'Jet Black'),
+    ('Graphite', 'Graphite'),
+    ('Pacific Blue', 'Pacific Blue'),
+    ('Midnight Green', 'Midnight Green'),
+    ('Sierra Blue', 'Sierra Blue'),
+    ('Alpine Green', 'Alpine Green'),
+    ('Deep Purple', 'Deep Purple'),
+    ('Yellow', 'Yellow'),
+    ('Slate', 'Slate'),
 ]
+
 
 class Product(models.Model):
     title = models.CharField(max_length=255)

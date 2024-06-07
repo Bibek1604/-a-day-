@@ -2,10 +2,11 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
-from .models import Product, FeatureProduct, BestSellingProduct, FlashSale, Coupon, Order
-from .serializers import ProductSerializer, FeatureProductSerializer, CouponSerializer, OrderSerializer
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
+from .models import Product, FeatureProduct, BestSellingProduct, FlashSale, Coupon, Order
+from .serializers import ProductSerializer, FeatureProductSerializer, BestSellingProductSerializer, FlashSaleSerializer, CouponSerializer, OrderSerializer
+from django.views.generic import ListView
 
 class ProductListCreateView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
@@ -33,35 +34,33 @@ class FeatureProductListView(generics.ListCreateAPIView):
     queryset = FeatureProduct.objects.all()
     serializer_class = FeatureProductSerializer
 
+class FeatureProductDetailView(generics.RetrieveAPIView):
+    queryset = FeatureProduct.objects.all()
+    serializer_class = FeatureProductSerializer
+
 @api_view(['GET'])
-def feature_product_detail_view(request, pk):
-    feature_product = get_object_or_404(FeatureProduct, pk=pk)
-    sale_end_time = feature_product.sale_end_time
-    current_time = timezone.now()
-    time_remaining = sale_end_time - current_time
-
-    context = {
-        'feature_product': feature_product,
-        'time_remaining': time_remaining,
-    }
-
-    return render(request, 'feature_product_detail.html', context)
-
 def best_selling_products(request):
     products = BestSellingProduct.objects.filter(available=True)
-    return render(request, 'best_selling_products.html', {'products': products})
+    serializer = BestSellingProductSerializer(products, many=True)
+    return Response(serializer.data)
 
+@api_view(['GET'])
 def best_selling_product_detail(request, pk):
     product = get_object_or_404(BestSellingProduct, pk=pk)
-    return render(request, 'best_selling_product_detail.html', {'product': product})
+    serializer = BestSellingProductSerializer(product)
+    return Response(serializer.data)
 
+@api_view(['GET'])
 def flash_sales_list(request):
     flash_sales = FlashSale.objects.all()
-    return render(request, 'flash_sales_list.html', {'flash_sales': flash_sales})
+    serializer = FlashSaleSerializer(flash_sales, many=True)
+    return Response(serializer.data)
 
+@api_view(['GET'])
 def flash_sale_detail(request, pk):
     flash_sale = get_object_or_404(FlashSale, pk=pk)
-    return render(request, 'flash_sale_detail.html', {'flash_sale': flash_sale})
+    serializer = FlashSaleSerializer(flash_sale)
+    return Response(serializer.data)
 
 @api_view(['POST'])
 def apply_coupon(request):
@@ -90,21 +89,45 @@ def create_order(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-from django.shortcuts import render
-from django.http import JsonResponse
-from .models import Product
 
-def search_products(request):
-    query = request.GET.get('q', '')
-    category = request.GET.get('category', '')
+class ProductsByCategoryList(generics.ListAPIView):
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        category = self.kwargs['category']
+        return Product.objects.filter(category=category, available=True)
     
-    products = Product.objects.all()
-    
-    if query:
-        products = products.filter(title__icontains=query)
-    
-    if category:
-        products = products.filter(category=category)
-    
-    product_list = list(products.values())
-    return JsonResponse(product_list, safe=False)
+class FlashSaleListView(ListView):
+    model = FlashSale
+    template_name = 'flash_sale_list.html'  # Replace with your template name
+    context_object_name = 'flash_sales'
+
+from .models import BestSellingProduct
+from .serializers import BestSellingProductSerializer
+
+class BestSellingProductListView(generics.ListAPIView):
+    queryset = BestSellingProduct.objects.all()
+    serializer_class = BestSellingProductSerializer
+
+from .serializers import CouponSerializer
+
+class CouponListView(generics.ListAPIView):
+    queryset = Coupon.objects.all()
+    serializer_class = CouponSerializer
+
+class CouponListCreateView(generics.ListCreateAPIView):
+    queryset = Coupon.objects.all()
+    serializer_class = CouponSerializer
+
+
+class CouponDetailView(generics.RetrieveAPIView):
+    queryset = Coupon.objects.all()
+    serializer_class = CouponSerializer
+
+class OrderListCreateView(generics.ListCreateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+class OrderDetailView(generics.RetrieveAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
