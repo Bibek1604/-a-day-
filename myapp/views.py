@@ -131,3 +131,12 @@ class OrderListCreateView(generics.ListCreateAPIView):
 class OrderDetailView(generics.RetrieveAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+
+def search_view(request):
+    query = request.GET.get('q')
+    if query:
+        search_results = Product.objects.filter(title__icontains=query)
+    else:
+        search_results = None
+
+    return render(request, 'search_results.html', {'search_results': search_results, 'query': query})

@@ -1,14 +1,23 @@
 from django.urls import path
+from django.conf.urls.static import static
+from django.conf import settings
+
+
+from django.contrib import admin
 from myapp.views import (
     ProductListCreateView, ProductDetailView,
     FeatureProductListView, FeatureProductDetailView,  # Updated import here
     BestSellingProductListView, best_selling_products, best_selling_product_detail,
     FlashSaleListView, flash_sales_list, flash_sale_detail,
     CouponListCreateView, CouponDetailView,
-    OrderListCreateView, OrderDetailView
+    OrderListCreateView, OrderDetailView,search_view
 )
 
+
 urlpatterns = [
+    path('admin/', admin.site.urls),
+
+
     path('products/', ProductListCreateView.as_view(), name='product-list-create'),
     path('products/<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
     
@@ -26,4 +35,9 @@ urlpatterns = [
     
     path('orders/', OrderListCreateView.as_view(), name='order-list-create'),
     path('orders/<int:pk>/', OrderDetailView.as_view(), name='order-detail'),
-]
+
+    path('search/', search_view, name='search'),
+
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

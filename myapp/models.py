@@ -50,6 +50,10 @@ class Product(models.Model):
     final_rate = models.DecimalField(max_digits=10, decimal_places=2)
     discount_percent = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     image = models.ImageField(upload_to='product_images/', default='path/to/default/image.jpg')
+    thumbnail1 = models.ImageField(upload_to='product_images/', default='path/to/default/image.jpg')
+    thumbnail2 = models.ImageField(upload_to='product_images/', default='path/to/default/image.jpg')
+    thumbnail3 = models.ImageField(upload_to='product_images/', default='path/to/default/image.jpg')
+    
     color = models.CharField(max_length=50, choices=COLOR_CHOICES, default='Red')
     available = models.BooleanField(default=True)
     stock = models.IntegerField(null=True)
