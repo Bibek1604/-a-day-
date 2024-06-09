@@ -21,6 +21,7 @@ class FlashSaleSerializer(serializers.ModelSerializer):
     class Meta:
         model = FlashSale
         fields = [
+            'id',
             'title', 
             'description', 
             'initial_rate', 
