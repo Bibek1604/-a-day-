@@ -3,8 +3,8 @@ from django.utils import timezone
 
 # Define category choices
 CATEGORY_CHOICES = [
-    ('Newiphone', 'New iPhone'),
-    ('OldIphone', 'Old iPhone'),
+    ('NewiPhone', 'New iPhone'),
+    ('OldiPhone', 'Old iPhone'),
     ('Cover', 'Cover'),
     ('Electronics', 'Electronics'),
     ('NewAndroid', 'New Android'),
@@ -38,10 +38,8 @@ COLOR_CHOICES = [
     ('Sierra Blue', 'Sierra Blue'),
     ('Alpine Green', 'Alpine Green'),
     ('Deep Purple', 'Deep Purple'),
-    ('Yellow', 'Yellow'),
     ('Slate', 'Slate'),
 ]
-
 
 class Product(models.Model):
     title = models.CharField(max_length=255)
@@ -50,13 +48,12 @@ class Product(models.Model):
     final_rate = models.DecimalField(max_digits=10, decimal_places=2)
     discount_percent = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     photo = models.ImageField(upload_to='product_images/', default='path/to/default/image.jpg')
-
     color = models.CharField(max_length=50, choices=COLOR_CHOICES, default='Red')
     available = models.BooleanField(default=True)
     stock = models.IntegerField(null=True)
     category = models.CharField(max_length=500, choices=CATEGORY_CHOICES, null=True, blank=True)
     warranty = models.CharField(max_length=100, null=True, blank=True)
-    storage = models.CharField(max_length=100, null=False, blank=True)
+    storage = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
         return self.title
@@ -75,7 +72,7 @@ class FeatureProduct(models.Model):
     stock = models.IntegerField(null=True)
     color = models.CharField(max_length=50, choices=COLOR_CHOICES, default='Red')
     warranty = models.CharField(max_length=100, null=True, blank=True)
-    storage = models.CharField(max_length=100, null=False, blank=True)
+    storage = models.CharField(max_length=100, blank=True)
 
     def save(self, *args, **kwargs):
         if self.initial_rate > 0:
@@ -97,7 +94,7 @@ class BestSellingProduct(models.Model):
     stock = models.IntegerField(null=True)
     category = models.CharField(max_length=500, choices=CATEGORY_CHOICES, null=True, blank=True)
     warranty = models.CharField(max_length=100, null=True, blank=True)
-    storage = models.CharField(max_length=100, null=False, blank=True)
+    storage = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
         return self.title
@@ -109,24 +106,22 @@ class FlashSale(models.Model):
     final_rate = models.DecimalField(max_digits=10, decimal_places=2)
     photo = models.ImageField(upload_to='flash_sale_photos/', default='flash_sale_photos/default_photo.jpg')
     remaining_time = models.DateTimeField()
-    discount_percentage = models.DecimalField(max_digits=5, decimal_places=2)
-    product_id = models.CharField(max_length=50)
+    discount_percent = models.DecimalField(max_digits=5, decimal_places=2)
     warranty = models.CharField(max_length=100, null=True, blank=True)
-    storage = models.CharField(max_length=100, null=False, blank=True)
+    storage = models.CharField(max_length=100, blank=True)
 
     def time_remaining(self):
         now = timezone.now()
         remaining_time = self.remaining_time - now
         if remaining_time.total_seconds() < 0:
-            return 0, 0, 0, 0  # Sale has ended
+            return 0, 0, 0, 0  
 
         days = remaining_time.days
         hours, remainder = divmod(remaining_time.seconds, 3600)
         minutes, seconds = divmod(remainder, 60)
         return days, hours, minutes, seconds
-
     def __str__(self):
-        return self.title
+        return self.title  
 
 class Coupon(models.Model):
     code = models.CharField(max_length=20, unique=True)

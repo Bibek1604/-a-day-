@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, FeatureProduct, BestSellingProduct, FlashSale, Coupon, Order
+from .models import Product, FeatureProduct, BestSellingProduct, FlashSale, Coupon, Order, OrderItem
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,26 +15,41 @@ class BestSellingProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = BestSellingProduct
         fields = '__all__'
-
 class FlashSaleSerializer(serializers.ModelSerializer):
     discount_percentage = serializers.SerializerMethodField()
 
     class Meta:
         model = FlashSale
-        fields = '__all__'
+        fields = [
+            'title', 
+            'description', 
+            'initial_rate', 
+            'final_rate', 
+            'photo', 
+            'remaining_time', 
+            'discount_percent', 
+            'warranty', 
+            'storage', 
+            'discount_percentage'  # Ensure this field is included here
+        ]
 
     def get_discount_percentage(self, obj):
-        if obj.initial_price > 0:
-            return ((obj.initial_price - obj.final_price) / obj.initial_price) * 100
+        if obj.initial_rate > 0:
+            return ((obj.initial_rate - obj.final_rate) / obj.initial_rate) * 100
         return 0
-from .models import Coupon
-
 class CouponSerializer(serializers.ModelSerializer):
     class Meta:
         model = Coupon
         fields = '__all__'
 
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = '__all__'
+
 class OrderSerializer(serializers.ModelSerializer):
+    items = OrderItemSerializer(many=True, read_only=True)
+
     class Meta:
         model = Order
         fields = '__all__'
