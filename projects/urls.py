@@ -10,9 +10,11 @@ from myapp.views import (
     BestSellingProductListView, best_selling_products, best_selling_product_detail,
     FlashSaleListView, flash_sales_list, flash_sale_detail,
     CouponListCreateView, CouponDetailView,
-    OrderListCreateView, OrderDetailView,search_view
+    OrderListCreateView, OrderDetailView,search_view,code_view
 )
 
+
+from myapp.models import Code
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -37,6 +39,8 @@ urlpatterns = [
     path('orders/<int:pk>/', OrderDetailView.as_view(), name='order-detail'),
 
     path('search/', search_view, name='search'),
+
+    path('code/', code_view, name='code'),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

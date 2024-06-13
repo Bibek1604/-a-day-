@@ -4,9 +4,11 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
-from .models import Product, FeatureProduct, BestSellingProduct, FlashSale, Coupon, Order
-from .serializers import ProductSerializer, FeatureProductSerializer, BestSellingProductSerializer, FlashSaleSerializer, CouponSerializer, OrderSerializer
+from .models import Product, FeatureProduct, BestSellingProduct, FlashSale, Coupon, Order,Code
+from .serializers import ProductSerializer, FeatureProductSerializer, BestSellingProductSerializer, FlashSaleSerializer, CouponSerializer, OrderSerializer,CodeSerializer
 from django.views.generic import ListView
+
+from myapp.serializers import CodeSerializer
 
 class ProductListCreateView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
@@ -140,3 +142,9 @@ def search_view(request):
         search_results = None
 
     return render(request, 'search_results.html', {'search_results': search_results, 'query': query})
+
+@api_view(['GET'])
+def code_view(request):
+    codes = Code.objects.all()
+    serializer = CodeSerializer(codes, many=True)
+    return Response(serializer.data)

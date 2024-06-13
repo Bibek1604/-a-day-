@@ -1,5 +1,9 @@
 from rest_framework import serializers
-from .models import Product, FeatureProduct, BestSellingProduct, FlashSale, Coupon, Order, OrderItem
+from .models import Product, FeatureProduct, BestSellingProduct, FlashSale, Coupon, Order, OrderItem,Code
+from .models import Code
+from rest_framework import serializers
+from django.conf import settings
+from .models import FlashSale
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,18 +24,20 @@ class FlashSaleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FlashSale
+        # fields = '__all__'
+
         fields = [
             'id',
             'title', 
             'description', 
             'initial_rate', 
             'final_rate', 
-            'photo', 
+            'pic', 
             'remaining_time', 
             'discount_percent', 
             'warranty', 
             'storage', 
-            'discount_percentage'  # Ensure this field is included here
+            'discount_percentage'  
         ]
 
     def get_discount_percentage(self, obj):
@@ -54,3 +60,17 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = '__all__'
+
+from .models import Code
+
+class CodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Code
+        fields = '__all__'
+
+    def get_photo(self, obj):
+        request = self.context.get('request')
+        if obj.pic and hasattr(obj.pic, 'url'):
+            photo_url = obj.pic.url
+            return request.build_absolute_uri(photo_url) if request else settings.MEDIA_URL + photo_url
+        return None
