@@ -83,25 +83,19 @@ WSGI_APPLICATION = 'projects.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Database of Apple',  
-        'USER': 'root',             
-        'PASSWORD': 'adminBibek', 
-        'HOST': '127.0.0.1',          
-        'PORT': '3306',               
-        # 'OPTIONS': {
-        #     'ssl': {
-        #         'ca': '/path/to/ca-cert.pem',  # Path to the CA certificate (if needed)
-        #         'cert': '/path/to/client-cert.pem',  # Path to the client certificate (if needed)
-        #         'key': '/path/to/client-key.pem',  # Path to the client key (if needed)
-        #         'cipher': 'TLS_AES_128_GCM_SHA256'  # SSL cipher (if needed)
-        #     }
-        # },
+        'NAME': 'applefinal',         # Your database name
+        'USER': 'root',               # Your database user
+        'PASSWORD': 'adminBibek',               # Your database password (if any)
+        'HOST': '127.0.0.1',          # Your database host
+        'PORT': '3306',               # Your database port
+
     }
 }
+
+
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 

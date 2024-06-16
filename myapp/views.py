@@ -3,12 +3,16 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from django.shortcuts import render, get_object_or_404
-from django.utils import timezone
-from .models import Product, FeatureProduct, BestSellingProduct, FlashSale, Coupon, Order,Code
-from .serializers import ProductSerializer, FeatureProductSerializer, BestSellingProductSerializer, FlashSaleSerializer, CouponSerializer, OrderSerializer,CodeSerializer
-from django.views.generic import ListView
-
-from myapp.serializers import CodeSerializer
+from .models import Product, FeatureProduct, BestSellingProduct, FlashSale, Coupon, Order, Code
+from .serializers import (
+    ProductSerializer,
+    FeatureProductSerializer,
+    BestSellingProductSerializer,
+    FlashSaleSerializer,
+    CouponSerializer,
+    OrderSerializer,
+    CodeSerializer
+)
 
 class ProductListCreateView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
@@ -20,10 +24,7 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class ProductPurchaseView(APIView):
     def post(self, request, pk):
-        try:
-            product = Product.objects.get(pk=pk)
-        except Product.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        product = get_object_or_404(Product, pk=pk)
         
         if product.stock > 0:
             product.stock -= 1
@@ -40,10 +41,17 @@ class FeatureProductDetailView(generics.RetrieveAPIView):
     queryset = FeatureProduct.objects.all()
     serializer_class = FeatureProductSerializer
 
+
+@api_view(['GET'])
+def flash_sales_list(request):
+    flash_sales = FlashSale.objects.all()
+    serializer = FlashSaleSerializer(flash_sales, many=True)
+    return Response(serializer.data)
+
 @api_view(['GET'])
 def best_selling_products(request):
-    products = BestSellingProduct.objects.filter(available=True)
-    serializer = BestSellingProductSerializer(products, many=True)
+    best_selling = BestSellingProduct.objects.all()
+    serializer = BestSellingProductSerializer(best_selling, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
@@ -52,11 +60,6 @@ def best_selling_product_detail(request, pk):
     serializer = BestSellingProductSerializer(product)
     return Response(serializer.data)
 
-@api_view(['GET'])
-def flash_sales_list(request):
-    flash_sales = FlashSale.objects.all()
-    serializer = FlashSaleSerializer(flash_sales, many=True)
-    return Response(serializer.data)
 
 @api_view(['GET'])
 def flash_sale_detail(request, pk):
@@ -98,29 +101,18 @@ class ProductsByCategoryList(generics.ListAPIView):
     def get_queryset(self):
         category = self.kwargs['category']
         return Product.objects.filter(category=category, available=True)
-    
-class FlashSaleListView(ListView):
-    model = FlashSale
-    template_name = 'flash_sale_list.html'  # Replace with your template name
-    context_object_name = 'flash_sales'
 
-from .models import BestSellingProduct
-from .serializers import BestSellingProductSerializer
+class FlashSaleListView(generics.ListAPIView):
+    queryset = FlashSale.objects.all()
+    serializer_class = FlashSaleSerializer
 
 class BestSellingProductListView(generics.ListAPIView):
     queryset = BestSellingProduct.objects.all()
     serializer_class = BestSellingProductSerializer
 
-from .serializers import CouponSerializer
-
-class CouponListView(generics.ListAPIView):
-    queryset = Coupon.objects.all()
-    serializer_class = CouponSerializer
-
 class CouponListCreateView(generics.ListCreateAPIView):
     queryset = Coupon.objects.all()
     serializer_class = CouponSerializer
-
 
 class CouponDetailView(generics.RetrieveAPIView):
     queryset = Coupon.objects.all()
@@ -136,11 +128,7 @@ class OrderDetailView(generics.RetrieveAPIView):
 
 def search_view(request):
     query = request.GET.get('q')
-    if query:
-        search_results = Product.objects.filter(title__icontains=query)
-    else:
-        search_results = None
-
+    search_results = Product.objects.filter(title__icontains=query) if query else None
     return render(request, 'search_results.html', {'search_results': search_results, 'query': query})
 
 @api_view(['GET'])
