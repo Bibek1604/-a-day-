@@ -4,8 +4,8 @@ from .views import (
     FeatureProductListView, FeatureProductDetailView,
     best_selling_products, best_selling_product_detail,
     flash_sales_list, flash_sale_detail,
-    CouponListCreateView, CouponDetailView,
-    OrderListCreateView, OrderDetailView
+    CouponListCreateView, CouponDetailView,OrderListCreateView
+    
 )
 from django.conf import settings
 from django.conf.urls.static import static
@@ -25,7 +25,9 @@ urlpatterns = [
     
     path('coupons/', CouponListCreateView.as_view(), name='coupon-list-create'),
     path('coupons/<int:pk>/', CouponDetailView.as_view(), name='coupon-detail'),
+       
+    path('order/', OrderListCreateView.as_view(), name='order-list-create'),
+
     
-    path('orders/', OrderListCreateView.as_view(), name='order-list-create'),
-    path('orders/<int:pk>/', OrderDetailView.as_view(), name='order-detail'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

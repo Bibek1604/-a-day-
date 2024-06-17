@@ -10,7 +10,7 @@ from myapp.views import (
     best_selling_products, best_selling_product_detail,
      flash_sales_list, flash_sale_detail,
     CouponListCreateView, CouponDetailView, flash_sales_list, flash_sale_detail, best_selling_products, best_selling_product_detail,
-    OrderListCreateView, OrderDetailView,search_view,code_view
+   search_view,code_view,OrderListCreateView
 )
 
 
@@ -34,13 +34,13 @@ urlpatterns = [
     
     path('coupons/', CouponListCreateView.as_view(), name='coupon-list-create'),
     path('coupons/<int:pk>/', CouponDetailView.as_view(), name='coupon-detail'),
-    
-    path('orders/', OrderListCreateView.as_view(), name='order-list-create'),
-    path('orders/<int:pk>/', OrderDetailView.as_view(), name='order-detail'),
+
 
     path('search/', search_view, name='search'),
 
     path('code/', code_view, name='code'),
+    path('order/', OrderListCreateView.as_view(), name='order-list-create'),
+
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

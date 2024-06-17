@@ -138,34 +138,34 @@ class Coupon(models.Model):
         now = timezone.now()
         return self.is_active and self.start_date <= now <= self.end_date
 
-class Customer(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
-    address = models.TextField()
-    phone_number = models.CharField(max_length=15)
-
-    def __str__(self):
-        return self.name
-
-class Order(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
-
-    def __str__(self):
-        return f'Order {self.id} by {self.customer.name}'
-
-class OrderItem(models.Model):
-    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-
-    def __str__(self):
-        return f'{self.quantity} x {self.product.title}'
 class Code(models.Model):
     promodis = models.CharField(max_length=255)
 
     def __str__(self):
         return self.promodis
-        
+
+class Order(models.Model):
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone_number = models.CharField(max_length=15)
+    address_line = models.CharField(max_length=255)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    zip_code = models.CharField(max_length=10)
+
+    PAY_WITH_CASH = 'cash'
+    PAY_WITH_DELIVERY = 'delivery'
+    PAYMENT_CHOICES = [
+        (PAY_WITH_CASH, 'Pay with Cash'),
+        (PAY_WITH_DELIVERY, 'Pay with Delivery')
+    ]
+    payment_method = models.CharField(max_length=10, choices=PAYMENT_CHOICES)
+
+    products = models.JSONField()  # Store product details as JSON
+    total_cost = models.DecimalField(max_digits=10, decimal_places=2)
+
+    created_at = models.DateTimeField(auto_now_add=True)  # To track order time
+
+    def __str__(self):
+        return f"Order {self.id} by {self.first_name} {self.last_name}"
