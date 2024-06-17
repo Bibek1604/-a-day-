@@ -106,7 +106,6 @@ class FlashSale(models.Model):
     initial_rate = models.DecimalField(max_digits=10, decimal_places=2)
     final_rate = models.DecimalField(max_digits=10, decimal_places=2)
     pic = models.ImageField(upload_to='flash_sale_photos/', default='flash_sale_photos/default_photo.jpg')
-    remaining_time = models.DateTimeField()
     discount_percent = models.DecimalField(max_digits=5, decimal_places=2)
     warranty = models.CharField(max_length=100, null=True, blank=True)
     storage = models.CharField(max_length=100, blank=True)
@@ -162,7 +161,7 @@ class Order(models.Model):
     ]
     payment_method = models.CharField(max_length=10, choices=PAYMENT_CHOICES)
 
-    products = models.JSONField()  # Store product details as JSON
+    products = models.JSONField()
     total_cost = models.DecimalField(max_digits=10, decimal_places=2)
 
     created_at = models.DateTimeField(auto_now_add=True)  # To track order time

@@ -10,7 +10,8 @@ from .serializers import (
     BestSellingProductSerializer,
     FlashSaleSerializer,
     CouponSerializer,
-    CodeSerializer
+    CodeSerializer,
+    OrderSerializer
 )
 
 class ProductListCreateView(generics.ListCreateAPIView):
@@ -124,11 +125,19 @@ def code_view(request):
     serializer = CodeSerializer(codes, many=True)
     return Response(serializer.data)
 
+
+
+from rest_framework import generics
 from myapp.models import Order
-from myapp.serializers import OrderSerializer
-from rest_framework import viewsets
 
-
-class OrderListCreateView(generics.ListCreateAPIView):
+class OrderCreateView(generics.CreateAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

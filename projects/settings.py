@@ -86,8 +86,9 @@ WSGI_APPLICATION = 'projects.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'applefinal',         # Your database name
-        'USER': 'root',               # Your database user
+        'NAME': 'appleshop',         # Your database name
+        'USER': 'root',      
+        'Current User' : 'root@localhost',         # Your database user
         'PASSWORD': 'adminBibek',               # Your database password (if any)
         'HOST': '127.0.0.1',          # Your database host
         'PORT': '3306',               # Your database port

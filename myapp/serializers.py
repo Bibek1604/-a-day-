@@ -33,7 +33,6 @@ class FlashSaleSerializer(serializers.ModelSerializer):
             'initial_rate', 
             'final_rate', 
             'pic', 
-            'remaining_time', 
             'discount_percent', 
             'warranty', 
             'storage', 
@@ -64,7 +63,8 @@ class CodeSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(photo_url) if request else settings.MEDIA_URL + photo_url
         return None
     
-from .models import Order
+
+from myapp.models import Order
 
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
