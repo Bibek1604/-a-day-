@@ -4,6 +4,8 @@ from .models import Code
 from rest_framework import serializers
 from django.conf import settings
 from .models import FlashSale
+from .models import Order
+from .models import Enhance
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -46,27 +48,21 @@ class FlashSaleSerializer(serializers.ModelSerializer):
 class CouponSerializer(serializers.ModelSerializer):
     class Meta:
         model = Coupon
-        fields = '__all__'
-
-
-from .models import Code
-
-class CodeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Code
-        fields = '__all__'
-
-    def get_photo(self, obj):
-        request = self.context.get('request')
-        if obj.pic and hasattr(obj.pic, 'url'):
-            photo_url = obj.pic.url
-            return request.build_absolute_uri(photo_url) if request else settings.MEDIA_URL + photo_url
-        return None
-    
-
-from myapp.models import Order
+        fields = '__all__' 
 
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
+        fields = '__all__'
+
+
+class codeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Code
+        fields = '__all__'
+
+
+class EnhanceSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Enhance
         fields = '__all__'

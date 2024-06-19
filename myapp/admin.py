@@ -1,7 +1,7 @@
 # myapp/admin.py - Remove model registrations
 
 from django.contrib import admin
-from .models import Product, FeatureProduct, BestSellingProduct, FlashSale, Coupon , Code
+from .models import Product, FeatureProduct, BestSellingProduct, FlashSale, Coupon , Code ,Enhance
 
 
 admin.site.register(Product)
@@ -9,10 +9,11 @@ admin.site.register(FeatureProduct)
 admin.site.register(BestSellingProduct)
 admin.site.register(FlashSale)
 admin.site.register(Coupon)
-
+admin.site.register(Enhance)
 admin.site.register(Code)
 
 from .models import Order
+
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):

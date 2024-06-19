@@ -10,9 +10,9 @@ from .serializers import (
     BestSellingProductSerializer,
     FlashSaleSerializer,
     CouponSerializer,
-    CodeSerializer,
-    OrderSerializer
-)
+    codeSerializer,
+    OrderSerializer,
+    )
 
 class ProductListCreateView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
@@ -112,8 +112,6 @@ class CouponDetailView(generics.RetrieveAPIView):
 
 
 
-
-
 def search_view(request):
     query = request.GET.get('q')
     search_results = Product.objects.filter(title__icontains=query) if query else None
@@ -122,22 +120,18 @@ def search_view(request):
 @api_view(['GET'])
 def code_view(request):
     codes = Code.objects.all()
-    serializer = CodeSerializer(codes, many=True)
+    serializer = codeSerializer(codes, many=True)
     return Response(serializer.data)
 
 
 
-from rest_framework import generics
-from myapp.models import Order
-
-class OrderCreateView(generics.CreateAPIView):
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+from rest_framework import generics, status
+from rest_framework.response import Response
+from .serializers import OrderSerializer
+@api_view(['POST'])
+def create_order(request):
+    serializer = OrderSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=201)
+    return Response(serializer.errors, status=400)

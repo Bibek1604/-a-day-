@@ -12,6 +12,7 @@ CATEGORY_CHOICES = [
     ('Laptop', 'Laptop'),
     ('Earbuds', 'Earbuds'),
     ('Android', 'Android'),
+    ('Accessories', 'Accessories'),
 ]
 
 # Define color choices
@@ -152,19 +153,18 @@ class Order(models.Model):
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
     zip_code = models.CharField(max_length=10)
-
-    PAY_WITH_CASH = 'cash'
-    PAY_WITH_DELIVERY = 'delivery'
-    PAYMENT_CHOICES = [
-        (PAY_WITH_CASH, 'Pay with Cash'),
-        (PAY_WITH_DELIVERY, 'Pay with Delivery')
-    ]
-    payment_method = models.CharField(max_length=10, choices=PAYMENT_CHOICES)
-
+    payment_method = models.CharField(max_length=10)
     products = models.JSONField()
     total_cost = models.DecimalField(max_digits=10, decimal_places=2)
-
-    created_at = models.DateTimeField(auto_now_add=True)  # To track order time
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Order {self.id} by {self.first_name} {self.last_name}"
+    
+class Enhance(models.Model):
+    picture =  models.ImageField(upload_to='enhance/', default='enhance/default_photo.jpg')
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+
+
+    

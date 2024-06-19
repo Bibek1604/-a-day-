@@ -8,9 +8,10 @@ from myapp.views import (
     best_selling_products, best_selling_product_detail,
     flash_sales_list, flash_sale_detail,
     CouponListCreateView, CouponDetailView,
-    search_view, code_view, OrderCreateView
+    search_view, code_view, create_order,
 )
 
+from myapp.models import Enhance
 urlpatterns = [
     path('admin/', admin.site.urls),
 
@@ -31,7 +32,7 @@ urlpatterns = [
     
     path('search/', search_view, name='search'),
     path('code/', code_view, name='code'),
-    path('order/', OrderCreateView.as_view(), name='order-list-create'),
-    path('order/<int:pk>', OrderCreateView.as_view(), name='order-list-create'),
+    path('order/', create_order, name='order-list-create'),
+    path('enhance/',Enhance , name = "Enhance-products")
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
