@@ -1,3 +1,4 @@
+from multiprocessing import AuthenticationError
 from rest_framework import serializers
 from .models import Product, FeatureProduct, BestSellingProduct, FlashSale, Coupon, Code
 from .models import Code
@@ -66,3 +67,35 @@ class EnhanceSerializers(serializers.ModelSerializer):
     class Meta:
         model = Enhance
         fields = '__all__'
+from rest_framework import serializers
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, attrs):
+        username = attrs.get('username')
+        password = attrs.get('password')
+
+        if username and password:
+            user = authenticate(username=username, password=password)
+
+            if user:
+                attrs['user'] = user
+                return attrs
+            else:
+                raise serializers.ValidationError("Unable to log in with provided credentials.")
+        else:
+            raise serializers.ValidationError("Must include 'username' and 'password'.")

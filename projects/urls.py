@@ -8,9 +8,11 @@ from myapp.views import (
     best_selling_products, best_selling_product_detail,
     flash_sales_list, flash_sale_detail,
     CouponListCreateView, CouponDetailView,
-    search_view, code_view, create_order,
+    search_view, code_view, create_order,enhance_view,LoginView
 )
 
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from myapp.views import RegisterUserView
 from myapp.models import Enhance
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,6 +35,10 @@ urlpatterns = [
     path('search/', search_view, name='search'),
     path('code/', code_view, name='code'),
     path('order/', create_order, name='order-list-create'),
-    path('enhance/',Enhance , name = "Enhance-products")
+    path('enhance/', enhance_view, name='enhance'),
+
+    path('register/', RegisterUserView.as_view(), name='register'),
+    path('login/', LoginView.as_view(), name='login'),
+
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
