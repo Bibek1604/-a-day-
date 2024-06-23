@@ -62,19 +62,21 @@ class codeSerializer(serializers.ModelSerializer):
         model = Code
         fields = '__all__'
 
+from .models import Enhance
 
-class EnhanceSerializers(serializers.ModelSerializer):
+class EnhanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Enhance
         fields = '__all__'
+
+
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username', 'email', 'password')
+        fields = ['id', 'username', 'password']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -85,17 +87,17 @@ class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
 
-    def validate(self, attrs):
-        username = attrs.get('username')
-        password = attrs.get('password')
+    def validate(self, data):
+        from django.contrib.auth import authenticate
+        user = authenticate(**data)
+        if user and user.is_active:
+            return {'user': user}
+        raise serializers.ValidationError("Incorrect Credentials")
 
-        if username and password:
-            user = authenticate(username=username, password=password)
+class CartItemSerializer(serializers.Serializer):
+    product_id = serializers.IntegerField()
+    quantity = serializers.IntegerField()
 
-            if user:
-                attrs['user'] = user
-                return attrs
-            else:
-                raise serializers.ValidationError("Unable to log in with provided credentials.")
-        else:
-            raise serializers.ValidationError("Must include 'username' and 'password'.")
+class SearchSerializer(serializers.Serializer):
+    query = serializers.CharField()
+    

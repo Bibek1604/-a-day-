@@ -137,18 +137,28 @@ def create_order(request):
     return Response(serializer.errors, status=400)
 
 from django.http import JsonResponse
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Enhance
+from .serializers import EnhanceSerializer
 
+@api_view(['GET'])
 def enhance_view(request):
-    # Example view function
-    data = {'message': 'This is an enhance endpoint response'}
-    return JsonResponse(data)
+    enhances = Enhance.objects.all()
+    serializer = EnhanceSerializer(enhances, many=True)
+    return Response(serializer.data)
+
+
+
+
+
 
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import UserSerializer, LoginSerializer
+from .serializers import UserSerializer, LoginSerializer, CartItemSerializer
 
 class RegisterUserView(APIView):
     permission_classes = [AllowAny]
@@ -177,3 +187,57 @@ class LoginView(APIView):
                 'access': str(refresh.access_token),
             }, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class AddToCartView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = CartItemSerializer(data=request.data)
+        if serializer.is_valid():
+            cart = request.session.get('cart', [])
+            cart.append(serializer.validated_data)
+            request.session['cart'] = cart
+            return Response({'status': 'Item added to cart'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class GetCartView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        cart = request.session.get('cart', [])
+        return Response(cart, status=status.HTTP_200_OK)
+
+
+from myapp.models import Product, FeatureProduct, BestSellingProduct, FlashSale
+from django.views.generic import View
+from django.db.models import Q
+
+class ProductSearchView(View):
+    def get(self, request):
+        query = request.GET.get('query')
+        if query:
+            products = []
+            
+            # Search across multiple models
+            products += list(Product.objects.filter(title__icontains=query))
+            products += list(FeatureProduct.objects.filter(title__icontains=query))
+            products += list(BestSellingProduct.objects.filter(title__icontains=query))
+            products += list(FlashSale.objects.filter(title__icontains=query))
+            
+            # Serialize queryset
+            product_serializer = ProductSerializer(products, many=True)
+            feature_product_serializer = FeatureProductSerializer(products, many=True)
+            best_selling_product_serializer = BestSellingProductSerializer(products, many=True)
+            flash_sale_serializer = FlashSaleSerializer(products, many=True)
+            
+            context = {
+                'products': products,
+                'query': query,
+                'product_serializer': product_serializer.data,
+                'feature_product_serializer': feature_product_serializer.data,
+                'best_selling_product_serializer': best_selling_product_serializer.data,
+                'flash_sale_serializer': flash_sale_serializer.data,
+            }
+            return render(request, 'product_search_results.html', context)
+        
+        return render(request, 'product_search_results.html', {'products': [], 'query': ''})

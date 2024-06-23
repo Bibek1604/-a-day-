@@ -8,7 +8,7 @@ from myapp.views import (
     best_selling_products, best_selling_product_detail,
     flash_sales_list, flash_sale_detail,
     CouponListCreateView, CouponDetailView,
-    search_view, code_view, create_order,enhance_view,LoginView
+    search_view, code_view, create_order,enhance_view,LoginView,AddToCartView,GetCartView ,ProductSearchView
 )
 
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
@@ -32,7 +32,6 @@ urlpatterns = [
     path('coupons/', CouponListCreateView.as_view(), name='coupon-list-create'),
     path('coupons/<int:pk>/', CouponDetailView.as_view(), name='coupon-detail'),
     
-    path('search/', search_view, name='search'),
     path('code/', code_view, name='code'),
     path('order/', create_order, name='order-list-create'),
     path('enhance/', enhance_view, name='enhance'),
@@ -40,5 +39,9 @@ urlpatterns = [
     path('register/', RegisterUserView.as_view(), name='register'),
     path('login/', LoginView.as_view(), name='login'),
 
-    
+    path('add_to_cart/', AddToCartView.as_view(), name='add_to_cart'),
+    path('get_cart/', GetCartView.as_view(), name='get_cart'),
+
+    path('search/', ProductSearchView.as_view(), name='product_search'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
