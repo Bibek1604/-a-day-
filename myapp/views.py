@@ -253,4 +253,4 @@ class NotificationView(APIView):
             {"id": notification.id, "Title": notification.title, "Description": notification.description}
             for notification in notifications
         ]
-        return Response(notifications_data, status=status.HTTP_200_OK)
+        return Response(notifications_data, status=status.HTTP_200_OK)  
