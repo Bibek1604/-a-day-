@@ -243,12 +243,14 @@ class ProductSearchView(View):
         return render(request, 'product_search_results.html', {'products': [], 'query': ''})
     
 from myapp.serializers import NotificationSerializer
+from rest_framework import status
+from .models import Notification  
 
 class NotificationView(APIView):
     def get(self, request):
-        notifications = request.user.notifications.all()
-        serializer = NotificationSerializer(notifications, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    
-
+        notifications = Notification.objects.all()  
+        notifications_data = [
+            {"id": notification.id, "Title": notification.title, "Description": notification.description}
+            for notification in notifications
+        ]
+        return Response(notifications_data, status=status.HTTP_200_OK)
