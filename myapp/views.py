@@ -241,3 +241,14 @@ class ProductSearchView(View):
             return render(request, 'product_search_results.html', context)
         
         return render(request, 'product_search_results.html', {'products': [], 'query': ''})
+    
+from myapp.serializers import NotificationSerializer
+
+class NotificationView(APIView):
+    def get(self, request):
+        notifications = request.user.notifications.all()
+        serializer = NotificationSerializer(notifications, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
+

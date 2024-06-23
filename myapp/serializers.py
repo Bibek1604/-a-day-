@@ -101,3 +101,9 @@ class CartItemSerializer(serializers.Serializer):
 class SearchSerializer(serializers.Serializer):
     query = serializers.CharField()
     
+from myapp.models import Notification
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = '__all__'

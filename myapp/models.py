@@ -166,5 +166,10 @@ class Enhance(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
 
-
+class Notification(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    picture = models.ImageField(upload_to='notification/', default='notification/default_photo.jpg')
+    def __str__(self):
+        return self.title
     
