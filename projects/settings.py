@@ -28,9 +28,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-wubntm)68(i$zo%aepyjki$4*(y5w4u!e#vk46v*%@jp(yf2xt'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [ "https://appleday.com.np"]
 CORS_ALLOW_ALL_ORIGINS = True
 
 
@@ -55,6 +55,8 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -98,6 +100,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'projects.wsgi.application'
+
+
+from django.core.wsgi import get_wsgi_application
+
+from whitenoise import WhiteNoise
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "geekydocs.settings")
+application = get_wsgi_application()
+
+application = WhiteNoise(application, root="static")
+
 
 
 # Database
@@ -168,4 +180,5 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
