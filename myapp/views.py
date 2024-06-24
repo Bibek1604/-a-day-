@@ -112,10 +112,7 @@ class CouponDetailView(generics.RetrieveAPIView):
 
 
 
-def search_view(request):
-    query = request.GET.get('q')
-    search_results = Product.objects.filter(title__icontains=query) if query else None
-    return render(request, 'search_results.html', {'search_results': search_results, 'query': query})
+
 
 @api_view(['GET'])
 def code_view(request):
@@ -208,40 +205,7 @@ class GetCartView(APIView):
         return Response(cart, status=status.HTTP_200_OK)
 
 
-from myapp.models import Product, FeatureProduct, BestSellingProduct, FlashSale
-from django.views.generic import View
-from django.db.models import Q
 
-class ProductSearchView(View):
-    def get(self, request):
-        query = request.GET.get('query')
-        if query:
-            products = []
-            
-            # Search across multiple models
-            products += list(Product.objects.filter(title__icontains=query))
-            products += list(FeatureProduct.objects.filter(title__icontains=query))
-            products += list(BestSellingProduct.objects.filter(title__icontains=query))
-            products += list(FlashSale.objects.filter(title__icontains=query))
-            
-            # Serialize queryset
-            product_serializer = ProductSerializer(products, many=True)
-            feature_product_serializer = FeatureProductSerializer(products, many=True)
-            best_selling_product_serializer = BestSellingProductSerializer(products, many=True)
-            flash_sale_serializer = FlashSaleSerializer(products, many=True)
-            
-            context = {
-                'products': products,
-                'query': query,
-                'product_serializer': product_serializer.data,
-                'feature_product_serializer': feature_product_serializer.data,
-                'best_selling_product_serializer': best_selling_product_serializer.data,
-                'flash_sale_serializer': flash_sale_serializer.data,
-            }
-            return render(request, 'product_search_results.html', context)
-        
-        return render(request, 'product_search_results.html', {'products': [], 'query': ''})
-    
 from myapp.serializers import NotificationSerializer
 from rest_framework import status
 from .models import Notification  

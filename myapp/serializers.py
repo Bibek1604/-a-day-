@@ -98,8 +98,8 @@ class CartItemSerializer(serializers.Serializer):
     product_id = serializers.IntegerField()
     quantity = serializers.IntegerField()
 
-class SearchSerializer(serializers.Serializer):
-    query = serializers.CharField()
+
+
     
 from myapp.models import Notification
 
