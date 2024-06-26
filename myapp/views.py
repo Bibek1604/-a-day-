@@ -218,21 +218,26 @@ class NotificationView(APIView):
             for notification in notifications
         ]
         return Response(notifications_data, status=status.HTTP_200_OK)  
-
+# views.py
 from django.shortcuts import render
-from django.http import JsonResponse
-from .models import Product, FeatureProduct, BestSellingProduct, FlashSale
+from .models import FlashSale
 
 def search_titles(request):
     query = request.GET.get('query', '')
-    if not query:
-        return JsonResponse({"error": "No search query provided."}, status=400)
+    flash_sale_results = []
+    product_results = []
+    best_selling_results = []
 
-    product_results = Product.objects.filter(title__icontains=query).values('id', 'title', 'pic', 'final_rate', 'initial_rate', 'product_type')
-    feature_product_results = FeatureProduct.objects.filter(title__icontains=query).values('id', 'title', 'pic', 'final_rate', 'initial_rate', 'product_type')
-    best_selling_product_results = BestSellingProduct.objects.filter(title__icontains=query).values('id', 'title', 'pic', 'final_rate', 'initial_rate', 'product_type')
-    flash_sale_results = FlashSale.objects.filter(title__icontains=query).values('id', 'title', 'pic', 'final_rate', 'initial_rate', 'product_type')
+    if query:
+        # Search in FlashSale model
+        flash_sale_results = FlashSale.objects.filter(title__icontains=query).values('id', 'title', 'pic', 'final_rate', 'initial_rate')
 
-    combined_results = list(product_results) + list(feature_product_results) + list(best_selling_product_results) + list(flash_sale_results)
+        # Search in Product model
+        product_results = Product.objects.filter(title__icontains=query).values('id', 'title', 'pic', 'final_rate', 'initial_rate')
 
-    return JsonResponse({"results": combined_results})
+        # Search in BestSellingProduct model
+        best_selling_results = BestSellingProduct.objects.filter(title__icontains=query).values('id', 'title', 'pic', 'final_rate', 'initial_rate')
+
+    combined_results = list(flash_sale_results) + list(product_results) + list(best_selling_results)
+
+    return render(request, 'search_results.html', {'search_results': combined_results})

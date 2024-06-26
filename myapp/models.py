@@ -56,6 +56,7 @@ class Product(models.Model):
     category = models.CharField(max_length=500, choices=CATEGORY_CHOICES, null=True, blank=True)
     warranty = models.CharField(max_length=100, null=True, blank=True)
     storage = models.CharField(max_length=100, blank=True)
+    product_type = models.CharField(max_length=50)
 
     def __str__(self):
         return self.title
