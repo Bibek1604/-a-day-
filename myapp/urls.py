@@ -8,7 +8,7 @@ from myapp.views import (
     best_selling_products, best_selling_product_detail,
     flash_sales_list, flash_sale_detail,
     CouponListCreateView, CouponDetailView,
-     code_view, create_order
+     code_view, create_order,search_titles
 )
 
 urlpatterns = [
@@ -33,5 +33,6 @@ urlpatterns = [
     path('order/', create_order, name='order-list-create'),
 
 
+        path('search/', search_titles, name='search_titles'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
