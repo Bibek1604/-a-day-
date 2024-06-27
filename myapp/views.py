@@ -12,6 +12,7 @@ from .serializers import (
     CouponSerializer,
     codeSerializer,
     OrderSerializer,
+    RecommendationSerializer
     )
 
 class ProductListCreateView(generics.ListCreateAPIView):
@@ -40,8 +41,31 @@ class FeatureProductListView(generics.ListCreateAPIView):
 class FeatureProductDetailView(generics.RetrieveAPIView):
     queryset = FeatureProduct.objects.all()
     serializer_class = FeatureProductSerializer
+from myapp.serializers import RecommendationSerializer
+from rest_framework import generics
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from myapp.models import Recommendation
+from myapp.serializers import RecommendationSerializer
 
 
+
+@api_view(['GET'])
+def recommendation_list_detail(request, pk):
+    try:
+        recommendation = Recommendation.objects.get(pk=pk)
+    except Recommendation.DoesNotExist:
+        return Response(status=404)
+    serializer = RecommendationSerializer(recommendation)
+    return Response(serializer.data)
+
+class RecommendationListCreate(generics.ListCreateAPIView):
+    queryset = Recommendation.objects.all()
+    serializer_class = RecommendationSerializer
+
+class RecommendationDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Recommendation.objects.all()
+    serializer_class = RecommendationSerializer
 @api_view(['GET'])
 def flash_sales_list(request):
     flash_sales = FlashSale.objects.all()
@@ -59,6 +83,8 @@ def best_selling_product_detail(request, pk):
     product = get_object_or_404(BestSellingProduct, pk=pk)
     serializer = BestSellingProductSerializer(product)
     return Response(serializer.data)
+
+ 
 
 
 @api_view(['GET'])
@@ -219,25 +245,34 @@ class NotificationView(APIView):
         ]
         return Response(notifications_data, status=status.HTTP_200_OK)  
 # views.py
-from django.shortcuts import render
-from .models import FlashSale
+from django.http import JsonResponse
+from django.db.models import Q
+from .models import Product, FeatureProduct, BestSellingProduct, FlashSale
 
-def search_titles(request):
-    query = request.GET.get('query', '')
-    flash_sale_results = []
-    product_results = []
-    best_selling_results = []
+def search_products(request):
+    query = request.GET.get('q', '')
+    product_results = Product.objects.filter(
+        Q(title__icontains=query) |
+        Q(description__icontains=query)
+    )
+    feature_product_results = FeatureProduct.objects.filter(
+        Q(title__icontains=query) |
+        Q(description__icontains=query)
+    )
+    best_selling_product_results = BestSellingProduct.objects.filter(
+        Q(title__icontains=query) |
+        Q(description__icontains=query)
+    )
+    flash_sale_results = FlashSale.objects.filter(
+        Q(title__icontains=query) |
+        Q(description__icontains=query)
+    )
 
-    if query:
-        # Search in FlashSale model
-        flash_sale_results = FlashSale.objects.filter(title__icontains=query).values('id', 'title', 'pic', 'final_rate', 'initial_rate')
+    results = {
+        'products': list(product_results.values()),
+        'feature_products': list(feature_product_results.values()),
+        'best_selling_products': list(best_selling_product_results.values()),
+        'flash_sales': list(flash_sale_results.values()),
+    }
 
-        # Search in Product model
-        product_results = Product.objects.filter(title__icontains=query).values('id', 'title', 'pic', 'final_rate', 'initial_rate')
-
-        # Search in BestSellingProduct model
-        best_selling_results = BestSellingProduct.objects.filter(title__icontains=query).values('id', 'title', 'pic', 'final_rate', 'initial_rate')
-
-    combined_results = list(flash_sale_results) + list(product_results) + list(best_selling_results)
-
-    return render(request, 'search_results.html', {'search_results': combined_results})
+    return JsonResponse(results, safe=False)

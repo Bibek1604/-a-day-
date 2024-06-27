@@ -1,6 +1,6 @@
 from multiprocessing import AuthenticationError
 from rest_framework import serializers
-from .models import Product, FeatureProduct, BestSellingProduct, FlashSale, Coupon, Code
+from .models import Product, FeatureProduct, BestSellingProduct, FlashSale, Coupon, Code,Recommendation
 from .models import Code
 from rest_framework import serializers
 from django.conf import settings
@@ -8,6 +8,10 @@ from .models import FlashSale
 from .models import Order
 from .models import Enhance
 
+class RecommendationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recommendation
+        fields = '__all__'
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product

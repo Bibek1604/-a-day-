@@ -8,7 +8,8 @@ from myapp.views import (
     best_selling_products, best_selling_product_detail,
     flash_sales_list, flash_sale_detail,
     CouponListCreateView, CouponDetailView,
-     code_view, create_order,enhance_view,LoginView,AddToCartView,GetCartView ,NotificationView,search_titles
+     code_view, create_order,enhance_view,LoginView,AddToCartView,GetCartView ,NotificationView,search_products,RecommendationListCreate,RecommendationDetail
+     ,recommendation_list_detail
 )
 
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
@@ -42,8 +43,11 @@ urlpatterns = [
     path('add_to_cart/', AddToCartView.as_view(), name='add_to_cart'),
     path('get_cart/', GetCartView.as_view(), name='get_cart'),
 
-        path('search/', search_titles, name='search_titles'),
-    
+    path('search/', search_products, name='search_products'),
+
+    path('recommendations/', RecommendationListCreate.as_view(), name='recommendation-list-create'),
+    path('recommendations/<int:pk>/', RecommendationDetail.as_view(), name='recommendation-detail'),
+    path('recommendations/detail/<int:pk>/', recommendation_list_detail, name='recommendation-list-detail'),
 
 
     path('notification/', NotificationView.as_view(), name='notification'),

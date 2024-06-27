@@ -87,6 +87,7 @@ class FeatureProduct(models.Model):
         return self.title
 
 class BestSellingProduct(models.Model):
+    id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255)
     description = models.TextField()
     initial_rate = models.DecimalField(max_digits=10, decimal_places=2)
@@ -96,6 +97,21 @@ class BestSellingProduct(models.Model):
     available = models.BooleanField(default=True)
     stock = models.IntegerField(null=True)
     category = models.CharField(max_length=500, choices=CATEGORY_CHOICES, null=True, blank=True)
+    warranty = models.CharField(max_length=100, null=True, blank=True)
+    storage = models.CharField(max_length=100, blank=True)
+
+    def __str__(self):
+        return self.title
+
+class Recommendation(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    initial_rate = models.DecimalField(max_digits=10, decimal_places=2)
+    final_rate = models.DecimalField(max_digits=10, decimal_places=2)
+    pic = models.ImageField(upload_to='recommendation_images/', default='recommendation_images/default_image.jpg')
+    color = models.CharField(max_length=50, choices=COLOR_CHOICES, default='Red')
+    available = models.BooleanField(default=True)
+    stock = models.IntegerField(null=True)
     warranty = models.CharField(max_length=100, null=True, blank=True)
     storage = models.CharField(max_length=100, blank=True)
 
