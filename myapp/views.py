@@ -276,3 +276,7 @@ def search_products(request):
     }
 
     return JsonResponse(results, safe=False)
+
+
+
+#this much
